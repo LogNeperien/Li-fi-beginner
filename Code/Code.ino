@@ -78,7 +78,7 @@ void loop() {
     if(myTime< 3100 && myTime > 2700 && caACommence == 0)//bit de start
     {
       caACommence = 1;
-      Serial.println("Ca commence !");
+      //Serial.println("Ca commence !");
     }
     if(myTime > 750 && myTime < 1400 && caACommence == 1)//bit 1
     {

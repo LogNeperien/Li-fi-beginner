@@ -34,36 +34,14 @@ void setup() {
 
 int tabToInt(int tab[], int somme, int numberPuissance)
 {
-  Serial.println("TAB TO INNNNTTTTTTT");
-  for(int i =0; i<8; i++){Serial.print(tab[i]);}
-  Serial.println();
-  Serial.print("tab[i] = ");
-  Serial.println(tab[7-numberPuissance]);
-  Serial.print("numberPuissance : ");
-  Serial.println(numberPuissance);
-  Serial.print("somme avant : ");
-  Serial.println(somme);
-  Serial.print("pow(2,numberPuissance) =  ");
-  Serial.println(pow(2,numberPuissance));
-  Serial.print("OPERATION : ");
-  Serial.println(somme + (1* ((pow(2,numberPuissance)))));
   if(tab[7-numberPuissance] == 1)
   {
     somme = somme + (tab[7-numberPuissance] * pow(2,numberPuissance));
     if(numberPuissance > 4) {somme = somme + 1;}
   }
-  
-  Serial.print("somme après : ");
-  Serial.println(somme);
-  if(numberPuissance == 0)
-  {
-    Serial.print("J'ai fini :  ...........................");
-    Serial.println(somme);
-    return somme;
-  }
+  if(numberPuissance == 0){return somme;}
   else
   {
-    Serial.println("et ca recommence !!");
     numberPuissance--;
     return tabToInt(tab,somme,numberPuissance);
   }
@@ -156,36 +134,20 @@ void loop() {
 
   if(micros() > 3000000 && micros() < 4000000)
   {
-    Serial.println(curseurTab);
-    Serial.println(curseurTabMontant);
-    Serial.println(curseurTime);
-    for(int i=0; i<curseurTime; i++)
-    {
-      Serial.println(tabTemps[i]+1);
-      //Serial.println(tabInt[i]);
-    }
-    for(int i=0; i<curseurTab; i++)
-    {
-      //Serial.println(tabTemps[i]+1);
-      Serial.println(tabInt[i]);
-    }
-
     for(int i = 0; i<8; i++)
     {
       for(int j = 0; j<8; j++)
       {
         matriceInt[i][j] = tabInt[i*8+j];
-        Serial.print(matriceInt[i][j]);
       }
-      Serial.println();
       tabDecimal[i] = tabToInt(matriceInt[i],0,7);
     }
     for(int i = 0; i<8; i++)
     {
-      Serial.println(tabDecimal[i]);
+      tabChar[i] = (char)tabDecimal[i];
+      Serial.print(tabChar[i]);
     }
-    Serial.println("SALUTSALUTSALUTSALUTSALUTSALUTSALUTSALUT");
-    
+    Serial.println();    
   }
 }
 

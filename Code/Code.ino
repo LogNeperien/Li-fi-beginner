@@ -6,19 +6,15 @@ int newState = 0;
 int oldState = 0;
 //commencement 
 int caACommence = 0;
+//affichage
+int cestAffiche = 0;
 
-//tableau des bits
+//tableau 
 int curseurTab = 0;
-int curseurTime = 0;
-int curseurTabMontant = 0;
 int tabInt[64]; //tableau de 8 octets
 int matriceInt[8][8];
 int tabDecimal[8];
 char tabChar[8]; //tableau de 8 caractères
-int tabTemps[65];
-
-//message final 
-String message = "";
 
 //start and stop chrono
 unsigned long startMillis;
@@ -32,6 +28,7 @@ void setup() {
 
 }
 
+//fonction qui sert à transformer un octect en décimal
 int tabToInt(int tab[], int somme, int numberPuissance)
 {
   if(tab[7-numberPuissance] == 1)
@@ -47,107 +44,60 @@ int tabToInt(int tab[], int somme, int numberPuissance)
   }
 }
 
+//fonction principale : affiche sous forme de string un signal recu sous forme de lumière
 void loop() {  
 
   
   state = analogRead(A5);
-  //Serial.println(state);
-  //Serial.println(newState);
-  if(state < 100)
+  
+  if(state < 100){newState = 0;}
+  else{newState = 1;}
+
+
+  if(newState != oldState && newState == 1)//FRONT MONTANT
   {
-    newState = 0;
+    startMillis = micros(); //On lance le chrono
+    oldState = newState; //On change l'ancien state  
   }
-  else
+   else if(newState != oldState && newState == 0)//FRONT DESCENDANT
   {
-    newState = 1;
-  }
-
-
-  if(newState != oldState && newState == 1)
-  {
-    //FRONT MONTANT
-    startMillis = micros();
-    oldState = newState;
-    curseurTabMontant++;
-    //Serial.println(curseurTabMontant);
+    stopMillis = micros(); //On arrete le chrono
+    oldState = newState; //On change l'ancien state
+    unsigned long myTime = stopMillis - startMillis; //On calcule le chrono entre front montant et front descendant 
     
-  }
-   else if(newState != oldState && newState == 0)
-  {
-    //FRONT DESCENDANT
-    stopMillis = micros();
-    oldState = newState;
-
-    
-    //Serial.println(curseurTab);
-
-    unsigned long myTime = stopMillis - startMillis;
-    /*Serial.print("startMillis: ");
-    Serial.println(startMillis); //prints time since program started
-    Serial.print("stopMillis: ");
-    Serial.println(stopMillis); //prints time since program started
-    Serial.print("Time: ");*/
-    
-    //Serial.println(myTime); //prints time since program started
-    tabTemps[curseurTime] = myTime;
-    
-    
-    if(myTime< 3100 && myTime > 2700 && caACommence == 0)//bit de start
-    {
-      caACommence = 1;
-      //Serial.println("Ca commence !");
-    }
-    if(myTime > 750 && myTime < 1400 && caACommence == 1)//bit 1
+    if(myTime< 3100 && myTime > 2700 && caACommence == 0){caACommence = 1;}//bit de start
+    else if(myTime > 750 && myTime < 1400 && caACommence == 1)//bit 1
     {
       //on push 1 dans le tableau
       tabInt[curseurTab] = 1;
       curseurTab++;
     }
-    if(myTime> 1650 && myTime < 2050 && caACommence == 1)//bit 0
+    else if(myTime> 1650 && myTime < 2050 && caACommence == 1)//bit 0
     {
-      //on push dans le tableau
+      //on push 0 dans le tableau
       tabInt[curseurTab] = 0;
       curseurTab++;
-    }
-    
-    curseurTime++;
-    /*
-    for(int i=0; i<curseurTab; i++)
-    {
-      Serial.print(tabInt[i]);
-    }*/
-    
-    
-  }
-  else
-  {
-    //pas de changement d'état
+    }  
   }
 
-  
-  //A FAIRE : 
-  //Faire la condition de next octet et de stop
-  //maintenant mon tableau devrait etre rempli de 0 et de 1 -> il faudrait les afficher
-  //ensuite il faudrait les convertir en caractère
-  //ensuite il faudrait les stocker dans une chaine de caractère
-  //ensuite il faut l'afficher
-
-  if(micros() > 3000000 && micros() < 4000000)
+  //Quand il n'y a pas eu de changement d'état depuis 200000 microsecondes et que le resultat n'a pas encore été affiché
+  if(stopMillis != 0 && (micros() > (stopMillis + 200000)) && cestAffiche == 0)
   {
     for(int i = 0; i<8; i++)
     {
       for(int j = 0; j<8; j++)
       {
-        matriceInt[i][j] = tabInt[i*8+j];
+        matriceInt[i][j] = tabInt[i*8+j]; //on transforme le tableau de 64 bits en une matrice de 8*8 bits
       }
-      tabDecimal[i] = tabToInt(matriceInt[i],0,7);
+      tabDecimal[i] = tabToInt(matriceInt[i],0,7); //on transforme chaque sous tableau en un décimal qu'on ajoute au tableau de décimal
     }
     for(int i = 0; i<8; i++)
     {
-      tabChar[i] = (char)tabDecimal[i];
+      tabChar[i] = (char)tabDecimal[i]; //on affiche l'ensemble des décimales sous forme de caractère en utilisant la table ASCII
       Serial.print(tabChar[i]);
     }
-    Serial.println();    
+    Serial.println();
+    cestAffiche = 1;  // on remplace la variable c'est affiché pour ne plus rentrer dans le if (on affiche qu'une seule fois)
   }
 }
 

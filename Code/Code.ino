@@ -80,13 +80,13 @@ void loop() {
       caACommence = 1;
       Serial.println("Ca commence !");
     }
-    if(myTime > 750 && myTime < 1350 && caACommence == 1)//bit 1
+    if(myTime > 750 && myTime < 1400 && caACommence == 1)//bit 1
     {
       //on push 1 dans le tableau
       tabInt[curseurTab] = 1;
       curseurTab++;
     }
-    if(myTime> 1700 && myTime < 2050 && caACommence == 1)//bit 0
+    if(myTime> 1650 && myTime < 2050 && caACommence == 1)//bit 0
     {
       //on push dans le tableau
       tabInt[curseurTab] = 0;

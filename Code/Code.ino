@@ -12,6 +12,7 @@ int curseurTab = 0;
 int curseurTime = 0;
 int curseurTabMontant = 0;
 int tabInt[64]; //tableau de 8 octets
+int matriceInt[8][8];
 char tabChar[8]; //tableau de 8 caractères
 int tabTemps[65];
 
@@ -28,6 +29,14 @@ void setup() {
   pinMode(8, OUTPUT);
   Serial.begin(9600);
 
+}
+
+int tabToInt(int tab[], int somme, int numberPuissance)
+{
+  somme = somme + tab[numberPuissance] * pow(2,numberPuissance);
+  numberPuissance++;
+  if(8 == numberPuissance){return somme;}
+  else{return tabToInt(tab,somme,numberPuissance);}
 }
 
 void loop() {  
@@ -130,7 +139,23 @@ void loop() {
       //Serial.println(tabTemps[i]+1);
       Serial.println(tabInt[i]);
     }
+
+    for(int i = 0; i<8; i++)
+    {
+      for(int j = 0; j<8; j++)
+      {
+        matriceInt[i][j] = tabInt[i*8+j];
+        Serial.print(matriceInt[i][j]);
+      }
+      Serial.println();
+    }
     Serial.println("SALUTSALUTSALUTSALUTSALUTSALUTSALUTSALUT");
+    
   }
 }
+
+
+
+
+
   

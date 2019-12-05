@@ -13,6 +13,7 @@ int curseurTime = 0;
 int curseurTabMontant = 0;
 int tabInt[64]; //tableau de 8 octets
 int matriceInt[8][8];
+int tabDecimal[8];
 char tabChar[8]; //tableau de 8 caractères
 int tabTemps[65];
 
@@ -33,10 +34,39 @@ void setup() {
 
 int tabToInt(int tab[], int somme, int numberPuissance)
 {
-  somme = somme + tab[numberPuissance] * pow(2,numberPuissance);
-  numberPuissance++;
-  if(8 == numberPuissance){return somme;}
-  else{return tabToInt(tab,somme,numberPuissance);}
+  Serial.println("TAB TO INNNNTTTTTTT");
+  for(int i =0; i<8; i++){Serial.print(tab[i]);}
+  Serial.println();
+  Serial.print("tab[i] = ");
+  Serial.println(tab[7-numberPuissance]);
+  Serial.print("numberPuissance : ");
+  Serial.println(numberPuissance);
+  Serial.print("somme avant : ");
+  Serial.println(somme);
+  Serial.print("pow(2,numberPuissance) =  ");
+  Serial.println(pow(2,numberPuissance));
+  Serial.print("OPERATION : ");
+  Serial.println(somme + (1* ((pow(2,numberPuissance)))));
+  if(tab[7-numberPuissance] == 1)
+  {
+    somme = somme + (tab[7-numberPuissance] * pow(2,numberPuissance));
+    if(numberPuissance > 4) {somme = somme + 1;}
+  }
+  
+  Serial.print("somme après : ");
+  Serial.println(somme);
+  if(numberPuissance == 0)
+  {
+    Serial.print("J'ai fini :  ...........................");
+    Serial.println(somme);
+    return somme;
+  }
+  else
+  {
+    Serial.println("et ca recommence !!");
+    numberPuissance--;
+    return tabToInt(tab,somme,numberPuissance);
+  }
 }
 
 void loop() {  
@@ -148,6 +178,11 @@ void loop() {
         Serial.print(matriceInt[i][j]);
       }
       Serial.println();
+      tabDecimal[i] = tabToInt(matriceInt[i],0,7);
+    }
+    for(int i = 0; i<8; i++)
+    {
+      Serial.println(tabDecimal[i]);
     }
     Serial.println("SALUTSALUTSALUTSALUTSALUTSALUTSALUTSALUT");
     
